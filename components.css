@@ -26,7 +26,7 @@
 .job::before {
   content: '';
   position: absolute;
-  left: calc(6rem + 2rem / 2 - 3px); /* centered in the gap */
+  left: calc(6rem + 0.75rem - 3px); /* centered in the 1.5rem gap */
   top: 0.4rem;
   width: 6px;
   height: 6px;

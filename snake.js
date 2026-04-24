@@ -1,8 +1,33 @@
 (function () {
   'use strict';
 
-  const GRID = 22;
-  const SPEED = 110; // ms per tick
+  const GRID  = 22;
+  const SPEED = 110;
+
+  // Load pixel font
+  const fontLink = document.createElement('link');
+  fontLink.rel  = 'stylesheet';
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
+  document.head.appendChild(fontLink);
+
+  // Injected styles — letter glow when game is active
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes snk-fade { 0%, 60% { opacity: 1 } 100% { opacity: 0 } }
+    body.snake-active .snk {
+      color: #00cc66;
+      text-shadow: 0 0 8px rgba(0, 204, 102, 0.8), 0 0 20px rgba(0, 204, 102, 0.3);
+      transition: color 0.4s ease, text-shadow 0.4s ease;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const C = {
+    snakeHead:   '#00d4ff',
+    snakeBody:   '#0077cc',
+    gridLine:    'rgba(0, 212, 255, 0.05)',
+    score:       '#00d4ff',
+  };
 
   let canvas, ctx;
   let active = false;
@@ -14,9 +39,7 @@
     if (active) return;
     active = true;
 
-    window.scrollTo(0, 0);
-    document.body.style.overflow = 'hidden';
-
+    document.body.classList.add('snake-active');
     wrapLetters();
 
     canvas = document.createElement('canvas');
@@ -26,7 +49,7 @@
       zIndex: '9999', pointerEvents: 'none',
     });
     document.body.appendChild(canvas);
-    canvas.width = window.innerWidth;
+    canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
     ctx = canvas.getContext('2d');
 
@@ -37,12 +60,11 @@
     nextDir = { x: 1, y: 0 };
     score   = 0;
 
-    // Give browser one frame to lay out the new spans before measuring
     requestAnimationFrame(() => {
       targets   = collectTargets();
       tickTimer = setInterval(tick, SPEED);
       animId    = requestAnimationFrame(draw);
-      toast('arrow keys · esc to quit');
+      toast('arrow keys  ·  esc to quit');
     });
   }
 
@@ -51,10 +73,10 @@
     active = false;
     clearInterval(tickTimer);
     cancelAnimationFrame(animId);
-    document.body.style.overflow = '';
+    document.body.classList.remove('snake-active');
     canvas?.remove();
     restore();
-    if (gameOver) toast(`game over — ${score} letters eaten`);
+    if (gameOver) toast(`game over  ·  ${score} pts`);
   }
 
   // ── DOM letter wrapping ──────────────────────────────────────
@@ -65,7 +87,7 @@
     );
     els.forEach(el => {
       const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-      const nodes = [];
+      const nodes  = [];
       let n;
       while ((n = walker.nextNode())) nodes.push(n);
       nodes.forEach(node => {
@@ -75,7 +97,7 @@
             frag.appendChild(document.createTextNode(ch));
           } else {
             const s = document.createElement('span');
-            s.className = 'snk';
+            s.className  = 'snk';
             s.textContent = ch;
             frag.appendChild(s);
           }
@@ -104,7 +126,7 @@
       const k  = `${gx},${gy}`;
       if (!seen.has(k) && gx >= 0 && gy >= 0 && gx < canvas.width && gy < canvas.height) {
         seen.add(k);
-        out.push({ x: gx, y: gy, char: span.textContent, span });
+        out.push({ x: gx, y: gy, span });
       }
     });
     return out;
@@ -139,39 +161,26 @@
     if (!active) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Food letters
-    ctx.textAlign    = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.font         = `400 ${Math.round(GRID * 0.78)}px 'Playfair Display', serif`;
-    ctx.fillStyle    = '#b89060';
-    targets.forEach(t => {
-      if (t.span) ctx.fillText(t.char, t.x, t.y);
-    });
+    // Pixel grid
+    ctx.strokeStyle = C.gridLine;
+    ctx.lineWidth   = 0.5;
+    for (let x = 0; x <= canvas.width;  x += GRID) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+    for (let y = 0; y <= canvas.height; y += GRID) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
 
-    // Snake segments
+    // Snake — sharp squares for pixel feel
     snake.forEach((seg, i) => {
-      ctx.fillStyle = i === 0 ? '#6b4c28' : '#c8a070';
-      ctx.beginPath();
-      roundRect(seg.x - GRID / 2 + 2, seg.y - GRID / 2 + 2, GRID - 4, GRID - 4, i === 0 ? 5 : 3);
-      ctx.fill();
+      ctx.fillStyle = i === 0 ? C.snakeHead : C.snakeBody;
+      ctx.fillRect(seg.x - GRID / 2 + 1, seg.y - GRID / 2 + 1, GRID - 2, GRID - 2);
     });
 
-    // Score
-    ctx.fillStyle    = '#9a9088';
-    ctx.font         = `300 11px 'DM Sans', sans-serif`;
+    // Score — pixel font
+    ctx.fillStyle    = C.score;
+    ctx.font         = "8px 'Press Start 2P', monospace";
     ctx.textAlign    = 'right';
     ctx.textBaseline = 'top';
-    ctx.fillText(`${score} letters eaten`, canvas.width - 20, 18);
+    ctx.fillText(`${score} pts`, canvas.width - 16, 16);
 
     animId = requestAnimationFrame(draw);
-  }
-
-  function roundRect(x, y, w, h, r) {
-    if (ctx.roundRect) {
-      ctx.roundRect(x, y, w, h, r);
-    } else {
-      ctx.rect(x, y, w, h);
-    }
   }
 
   // ── Toast ────────────────────────────────────────────────────
@@ -180,19 +189,21 @@
     const d = document.createElement('div');
     d.textContent = msg;
     Object.assign(d.style, {
-      position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)',
-      fontFamily: "'DM Sans', sans-serif", fontSize: '11px', fontWeight: '300',
-      letterSpacing: '0.1em', textTransform: 'lowercase', color: '#7a7468',
-      zIndex: '10000', pointerEvents: 'none',
-      animation: 'snk-fade 2.5s ease forwards',
+      position:   'fixed',
+      bottom:     '1.5rem',
+      left:       '50%',
+      transform:  'translateX(-50%)',
+      fontFamily: "'Press Start 2P', monospace",
+      fontSize:   '8px',
+      color:      '#00cc66',
+      zIndex:     '10000',
+      pointerEvents: 'none',
+      whiteSpace: 'nowrap',
+      animation:  'snk-fade 3s ease forwards',
     });
     document.body.appendChild(d);
-    setTimeout(() => d.remove(), 2500);
+    setTimeout(() => d.remove(), 3000);
   }
-
-  const style = document.createElement('style');
-  style.textContent = '@keyframes snk-fade{0%,60%{opacity:1}100%{opacity:0}}';
-  document.head.appendChild(style);
 
   // ── Input ────────────────────────────────────────────────────
 
@@ -209,7 +220,7 @@
     if (!d) return;
     e.preventDefault();
     if (!active) { start(); return; }
-    if (d.x === -dir.x || d.y === -dir.y) return; // no 180°
+    if (d.x === -dir.x || d.y === -dir.y) return;
     nextDir = d;
   });
 })();
