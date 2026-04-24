@@ -169,3 +169,15 @@ h2 {
   color: #c8c0b0;
   margin: 0 0.5rem;
 }
+
+.easter-egg {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-light);
+  letter-spacing: var(--tracking-wider);
+  color: #c8c0b0;
+  text-align: center;
+  padding: 3rem 0 2rem;
+  margin: 0;
+  user-select: none;
+}

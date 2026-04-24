@@ -107,6 +107,8 @@
 
   </main>
 
+  <p class="easter-egg">press ↑ ↓ ← →</p>
+
   <script>
     const els = document.querySelectorAll('.job, .about p, .skill-group');
     const io = new IntersectionObserver(
@@ -115,6 +117,7 @@
     );
     els.forEach(el => io.observe(el));
   </script>
+  <script src="snake.js" defer></script>
 
 </body>
 
