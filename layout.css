@@ -1,0 +1,109 @@
+/* layout.css — page grid, masthead layout, section spacing */
+
+:root {
+  --page-max: 860px;
+  --page-pad-x: clamp(1.5rem, 6vw, 5rem);
+  --section-gap: 5rem;
+  --masthead-gap: 4rem;
+}
+
+/* ─── Page shell ────────────────────────────────────────────── */
+
+body {
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+main,
+header.masthead {
+  max-width: var(--page-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--page-pad-x);
+  padding-right: var(--page-pad-x);
+}
+
+/* ─── Masthead ──────────────────────────────────────────────── */
+
+header.masthead {
+  padding-top: clamp(3rem, 8vh, 6rem);
+  padding-bottom: var(--masthead-gap);
+  border-bottom: 1px solid #e0d8cc;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.masthead-contact {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+/* ─── Rule between masthead and content ─────────────────────── */
+
+main {
+  padding-top: var(--section-gap);
+  padding-bottom: clamp(4rem, 10vh, 8rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+/* ─── Sections ──────────────────────────────────────────────── */
+
+section.about,
+section.experience,
+section.skills {
+  position: relative;
+}
+
+/* Thin top rule above each section heading */
+section.experience::before,
+section.skills::before {
+  content: '';
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  background: #c8c0b0;
+  margin-bottom: 1.5rem;
+}
+
+/* ─── About ─────────────────────────────────────────────────── */
+
+.about p {
+  max-width: 640px;
+}
+
+/* ─── Experience ────────────────────────────────────────────── */
+
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2.75rem;
+}
+
+.job {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 0 2rem;
+  align-items: start;
+}
+
+.job-year {
+  padding-top: 0.25rem;
+  text-align: right;
+}
+
+/* ─── Skills ─────────────────────────────────────────────────── */
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem 3rem;
+}

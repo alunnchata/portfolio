@@ -1,0 +1,87 @@
+/* components.css — timeline, skills grid, specific UI pieces */
+
+/* ─── Timeline ──────────────────────────────────────────────── */
+
+/* Vertical rule running down the timeline */
+.timeline {
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0.35rem;
+  left: 6rem; /* aligns with the right edge of .job-year column */
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, #d8d0c4 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Dot at the start of each job entry */
+.job {
+  position: relative;
+}
+
+.job::before {
+  content: '';
+  position: absolute;
+  left: calc(6rem + 2rem / 2 - 3px); /* centered in the gap */
+  top: 0.4rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c8b89a;
+  border: 1px solid #FAF8F4;
+  box-shadow: 0 0 0 1px #c8b89a;
+  z-index: 1;
+}
+
+.job-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Skills grid ───────────────────────────────────────────── */
+
+.skill-group {
+  padding: 1.5rem 0;
+  border-top: 1px solid #e0d8cc;
+}
+
+/* Remove top border from first group — section heading rule above suffices */
+.skill-group:first-child {
+  border-top: none;
+}
+
+/* ─── Scroll fade-in ────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  .job,
+  .about p,
+  .skill-group {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  .job.visible,
+  .about p.visible,
+  .skill-group.visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ─── Scroll observer script (inline in CSS comment — placed via JS in HTML) ─
+   Add this <script> before </body> in index.html if animation is desired:
+
+   <script>
+     const els = document.querySelectorAll('.job, .about p, .skill-group');
+     const io = new IntersectionObserver(
+       entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
+       { threshold: 0.15 }
+     );
+     els.forEach(el => io.observe(el));
+   </script>
+────────────────────────────────────────────────────────────────────────────── */

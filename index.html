@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alec Lunn — Data Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="layout.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="responsive.css" />
+</head>
+
+<body>
+
+  <header class="masthead">
+    <div class="masthead-name">
+      <h1>Alec Lunn</h1>
+      <p class="masthead-title">Data Engineer</p>
+    </div>
+    <div class="masthead-contact">
+      <a href="mailto:[alunn@chata.ai]">[alunn@chata.ai]</a>
+      <span class="contact-divider">·</span>
+      <a href="https://www.linkedin.com/in/aleclunn/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="about">
+      <p>I design and build the data systems that turn raw, messy information into reliable infrastructure teams can
+        build on. My work sits at the intersection of engineering discipline and analytical curiosity — pipelines that
+        don't just move data, but make it trustworthy.</p>
+    </section>
+
+    <section class="experience">
+      <h2>Experience</h2>
+      <ol class="timeline" reversed>
+
+        <li class="job">
+          <div class="job-year">2026 - Present</div>
+          <div class="job-content">
+            <h3 class="job-title">Data Engineer</h3>
+            <p class="job-company">Chata.ai</p>
+          </div>
+        </li>
+
+        <li class="job">
+          <div class="job-year">2024 - 2026</div>
+          <div class="job-content">
+            <h3 class="job-title">Senior Data Engineer</h3>
+            <p class="job-company">Google Cloud </p>
+          </div>
+        </li>
+
+        <li class="job">
+          <div class="job-year"> 2021 - 2024</div>
+          <div class="job-content">
+            <h3 class="job-title">Data Engineer</h3>
+            <p class="job-company">Microsoft</p>
+          </div>
+        </li>
+
+      </ol>
+    </section>
+
+    <section class="skills">
+      <h2>Skills</h2>
+      <div class="skills-grid">
+
+        <div class="skill-group">
+          <h3>Languages</h3>
+          <ul>
+            <li>Python</li>
+            <li>SQL</li>
+            <li>Bash</li>
+          </ul>
+        </div>
+
+        <div class="skill-group">
+          <h3>Platforms &amp; Tools</h3>
+          <ul>
+            <li>dbt</li>
+            <li>Airflow</li>
+            <li>Spark</li>
+            <li>Snowflake</li>
+          </ul>
+        </div>
+
+        <div class="skill-group">
+          <h3>Infrastructure</h3>
+          <ul>
+            <li>AWS</li>
+            <li>Terraform</li>
+            <li>Docker</li>
+            <li>Kubernetes</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const els = document.querySelectorAll('.job, .about p, .skill-group');
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
+      { threshold: 0.15 }
+    );
+    els.forEach(el => io.observe(el));
+  </script>
+
+</body>
+
+</html>
